@@ -1,0 +1,92 @@
+// variables
+$primary-color: #2563eb;
+$secondary-color: #1e293b;
+$bg-start: #0f172a;
+$bg-end: #334155;
+$text-color: #ffffff;
+$radius: 12px;
+$transition: 0.3s;
+
+%center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin glass-effect {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+@mixin input-style {
+    width: 93%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    outline: none;
+
+    &::placeholder {
+        color: #d1d5db;
+    }
+
+    &:focus {
+        border-color: lighten($primary-color, 20%);
+    }
+}
+
+.login-container {
+    @extend %center;
+    height: 100vh;
+    background: linear-gradient(135deg, $bg-start, $secondary-color, $bg-end);
+
+    form {
+        @include glass-effect;
+        width: 360px;
+        padding: 35px;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+
+        h2 {
+            color: $text-color;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: $text-color;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+    }
+
+    input {
+        @include input-style;
+        margin-bottom: 18px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: $primary-color;
+        color: $text-color;
+        border: none;
+        border-radius: $radius;
+        cursor: pointer;
+        transition: $transition;
+
+        &:hover {
+            background: darken($primary-color,10%);
+        }
+        &:active{
+            transform: scale(.98);
+        }
+    }
+    
+}
+
+

@@ -1,0 +1,64 @@
+// variables
+$primary:#2563eb;
+$background1:#0f172a;
+$background2:#1e293b;
+$background3:3334155;
+$text:white;
+$radius:12px;
+
+// mixins
+@mixin glass{
+     background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 25px rgba(0,0,0,.3);
+}
+
+@mixin center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.landing-container{
+    min-height: 100vh;
+    background: linear-gradient(135deg,$background1,$background2,$background3);
+    padding: 40px;
+    .upload-card{
+        @include glass;
+        width: 500px;
+        margin: auto;
+        padding: 30px;
+        border-radius: $radius;
+    }
+    h2{
+        color: $text;
+        text-align: center;
+        color: #0f172a;
+        margin-bottom: 25px;
+    }
+    
+    button{
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: $radius;
+        background: $primary;
+        color: white;
+        cursor: pointer;
+        transition: .3s;
+        &:hover{
+            background: #1d4ed8;
+        }
+    }
+}
+.grid-container{
+    margin-top: 30px;
+    text-align: center;
+    input{
+        margin-bottom: 5px;
+        border-radius: 6px;
+        border: 1px solid rgb(192, 192, 135);
+        padding: 5px;
+       
+    }
+}

@@ -1,0 +1,29 @@
+<div class="landing-container">
+
+    <div class="upload-card">
+        <h2>Document Upload</h2>
+        <input hidden type="file" #fileInput accept=".xlsx,.xls" (change)="onFileSelected($event)">
+        <button (click)="fileInput.click()" kendoButton>Import File</button>
+    </div>
+
+
+    <div class="grid-container">
+       
+        @if(excelData().length){
+             <input type="text" placeholder="Search here..." (input)="search($event)">
+        <kendo-grid [pageable]="true" [pageSize]="10" [filterable]="true" [kendoGridBinding]="excelData()" [height]="400">
+            
+            <!-- <kendo-grid-column field="id" title="ID"> </kendo-grid-column> -->
+            <kendo-grid-column [filterable]="false" field="Name" title="Name"> </kendo-grid-column>
+            <kendo-grid-column [filterable]="false" field="Email" title="Email"> </kendo-grid-column>
+            <kendo-grid-column field="Department" title="Department"> </kendo-grid-column>
+            <kendo-grid-column field="Designation" title="Designation"> </kendo-grid-column>
+            <kendo-grid-column [filterable]="false" field="Salary" title="salary"> </kendo-grid-column>
+            <kendo-grid-column [filterable]="false" field="Location" title="Location"> </kendo-grid-column>
+            <kendo-grid-column [filterable]="false" field="Status" title="Status"> </kendo-grid-column>
+        </kendo-grid>
+
+        }
+
+    </div>
+</div>
