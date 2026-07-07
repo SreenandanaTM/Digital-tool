@@ -3,24 +3,83 @@
     <div class="upload-card">
         <h2>Document Upload</h2>
         <input hidden type="file" #fileInput accept=".xlsx,.xls" (change)="onFileSelected($event)">
-        <button (click)="fileInput.click()" kendoButton>Import File</button>
+        <button id="import" (click)="fileInput.click()" kendoButton>Import File</button>
     </div>
 
 
     <div class="grid-container">
-       
-        @if(excelData().length){
-             <input type="text" placeholder="Search here..." (input)="search($event)">
-        <kendo-grid [pageable]="true" [pageSize]="10" [filterable]="true" [kendoGridBinding]="excelData()" [height]="400">
-            
+
+        @if(showGrid){
+        <input type="text" placeholder="Search here..." (input)="search($event)">
+        <kendo-grid [kendoGridReactiveEditing]="createFormGroup" [pageable]="true" [pageSize]="10" [filterable]="true" [kendoGridBinding]="excelData()"
+            [height]="400" [rowClass]="rowClass" (save)="saveHandler($event)">
+            <ng-template kendoGridToolbarTemplate>
+                <button id="excelExp" type="button" kendoGridExcelCommand [svgIcon]="fileExcelIcon">
+                    Export to Excel
+                </button>
+                <button id="pdfExp" kendoGridPDFCommand [svgIcon]="filePdfIcon">
+                    Export to PDF
+                </button>
+            </ng-template>
+
+
             <!-- <kendo-grid-column field="id" title="ID"> </kendo-grid-column> -->
-            <kendo-grid-column [filterable]="false" field="Name" title="Name"> </kendo-grid-column>
-            <kendo-grid-column [filterable]="false" field="Email" title="Email"> </kendo-grid-column>
-            <kendo-grid-column field="Department" title="Department"> </kendo-grid-column>
-            <kendo-grid-column field="Designation" title="Designation"> </kendo-grid-column>
-            <kendo-grid-column [filterable]="false" field="Salary" title="salary"> </kendo-grid-column>
-            <kendo-grid-column [filterable]="false" field="Location" title="Location"> </kendo-grid-column>
-            <kendo-grid-column [filterable]="false" field="Status" title="Status"> </kendo-grid-column>
+            <kendo-grid-column editor="text"  [filterable]="false" field="Name" title="Name">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span
+                        [class.invalid-cell]="dataItem.nameError">{{dataItem.nameError?'*Invalid':dataItem.Name}}</span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column editor="text" [filterable]="false" field="Email" title="Email"><ng-template kendoGridCellTemplate
+                    let-dataItem>
+                    <span
+                        [class.invalid-cell]="dataItem.emailError">{{dataItem.emailError?'*Invalid':dataItem.Email}}</span>
+                </ng-template> </kendo-grid-column>
+
+            <kendo-grid-column editor="text" field="Department" title="Department">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span
+                        [class.invalid-cell]="dataItem.departmentError">{{dataItem.departmentError?'*Invalid':dataItem.Department}}</span>
+                </ng-template> </kendo-grid-column>
+            <kendo-grid-column editor="text" field="Designation" title="Designation">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span
+                        [class.invalid-cell]="dataItem.designationError">{{dataItem.designationError?'*Invalid':dataItem.Designation}}</span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column editor="numeric" [filterable]="false" field="salary" title="Salary">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span
+                        [class.invalid-cell]="dataItem.salaryError">{{dataItem.salaryError?'*Invalid':dataItem.salary}}</span>
+                </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column editor="text" [filterable]="false" field="Location" title="Location">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span
+                        [class.invalid-cell]="dataItem.locationError">{{dataItem.locationError?'*Invalid':dataItem.Location}}</span>
+                </ng-template> </kendo-grid-column>
+            <kendo-grid-column editor="text" [filterable]="false" field="Status" title="Status">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                    <span
+                        [class.invalid-cell]="dataItem.statusError">{{dataItem.statusError?'*Invalid':dataItem.Status}}</span>
+                </ng-template> </kendo-grid-column>
+
+            <!-- editing inline(row) -->
+            <kendo-grid-command-column  [width]="220">
+                <ng-template kendoGridCellTemplate let-isNew="isNew">
+                    <button id="edit" kendoGridEditCommand themeColor="primary">Edit</button>
+                    <button id="remove" kendoGridRemoveCommand>Remove</button>
+                    <button kendoGridSaveCommand>
+                        {{ isNew ? "Add" : "Update" }}
+                    </button>
+                    <button kendoGridCancelCommand>
+                        {{ isNew ? "Discard changes" : "Cancel" }}
+                    </button>
+                </ng-template>
+            </kendo-grid-command-column>
+
+            <kendo-grid-pdf [allPages]="true" fileName="Products.pdf" paperSize="A4"></kendo-grid-pdf>
+            <kendo-grid-excel fileName="Employees.xlsx" [fetchData]="allData"></kendo-grid-excel>
         </kendo-grid>
 
         }

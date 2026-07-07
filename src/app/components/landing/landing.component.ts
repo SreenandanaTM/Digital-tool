@@ -1,25 +1,50 @@
 import { Component, inject, signal } from '@angular/core';
 import { AllApiService } from '../../service/all-api.service';
 import { switchMap } from 'rxjs';
-import { KENDO_GRID } from '@progress/kendo-angular-grid';
+import { CreateFormGroupArgs, KENDO_GRID, KENDO_GRID_EXCEL_EXPORT, KENDO_GRID_PDF_EXPORT, SaveEvent } from '@progress/kendo-angular-grid';
+import { SVGIcon, filePdfIcon, fileExcelIcon  } from "@progress/kendo-svg-icons";
+import { ExcelExportData } from '@progress/kendo-angular-excel-export';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [KENDO_GRID],
+  imports: [KENDO_GRID,KENDO_GRID_PDF_EXPORT,KENDO_GRID_EXCEL_EXPORT],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss'
 })
 export class LandingComponent {
   api = inject(AllApiService)
+    fb=inject(FormBuilder)
+
 
   selectedFile!: File
 
   excelData = signal<any[]>([]);
-  allEmployees=signal<any[]>([])
+  allEmployees = signal<any[]>([])
+  // variable for setting the grid view when searching anything that not in the gird
+  showGrid = false;
+  public filePdfIcon: SVGIcon = filePdfIcon;
+  public fileExcelIcon: SVGIcon = fileExcelIcon;
 
-  
+
+
+   public createFormGroup=(args: CreateFormGroupArgs): FormGroup =>{
+    const item = args.isNew ? {} : args.dataItem;
+
+    return this.fb.group({
+      Name: [item.Name, [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
+      Email: [item.Email, [Validators.required, Validators.email]],
+      Department: [item.Department, [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
+      Designation: [item.Designation, [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
+      salary: [Number(item.salary), [Validators.required, Validators.pattern('[0-9]*')]],
+      Location: [item.Location, [Validators.required, Validators.pattern('[a-zA-Z]*')]],
+      Status:[item.Status]
+    });
+  }
+
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -33,14 +58,16 @@ export class LandingComponent {
 
 
 
-// upload files temporarily
+  // upload files temporarily
   uploadFile() {
     if (this.selectedFile) {
       this.api.importExcelAPI(this.selectedFile).subscribe({
         next: (res: any) => {
           console.log(res);
-          this.allEmployees.set(res)
-          this.excelData.set(res)
+          const validateData=this.validateMandatoryFields(res)
+          this.allEmployees.set(validateData)
+          this.excelData.set(validateData)
+          this.showGrid = true
 
         },
         error: (err) => {
@@ -51,44 +78,90 @@ export class LandingComponent {
 
     }
   }
-   // search function
-search(event:any){
-  const searchText=event.target.value.toLowerCase();
-  const filteredData=this.allEmployees().filter((item:any)=>
-    item.Name.toLowerCase().includes(searchText)
-  )
-  this.excelData.set(filteredData)
-}
+  // search function
+  search(event: any) {
+    const searchText = event.target.value.toLowerCase();
+    const filteredData = this.allEmployees().filter((item: any) =>
+      item.Name.toLowerCase().includes(searchText)
+    )
+    this.excelData.set(filteredData)
+  }
+
+  // validate mandatory fields in the grid if it is empty
+  validateMandatoryFields(data:any[]){
+    return data.map(item=>({
+      ...item,
+      nameError:!/^[A-Za-z ]+$/.test(item.Name),
+      emailError:!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(item.Email),
+      departmentError:!/^[A-Za-z ]+$/.test(item.Department),
+      designationError:!/^[A-Za-z ]+$/.test(item.Designation),
+      salaryError:!/^\d+(\.\d+)?$/.test(item.salary),
+      locationError:!/^[A-Za-z ]+$/.test(item.Location),
+      statusError:!/^(completed|Pending|Cancelled|Due)$/i.test(item.Status),
+      isInvalid:
+      !item.Name||
+      !item.Email||
+      !item.Department||
+      !item.Location||
+      !item.Designation||
+      !item.salary||
+      !item.Status
+
+    }))
+  }
 
 
 
-    // upload excel data and  get excel data using switchmap
-    // uploadFile(){
-    //   if(this.selectedFile){
-    //     this.api.importExcelAPI(this.selectedFile).pipe(
-    //     switchMap((res:any)=>{
-    //       alert(res.message)
-    //       return this.api.exportExcelAPI();
-    //     })
-    //   ).subscribe({
-    //     next:(res:any)=>{
-    //       console.log(res);
-    //       this.excelData.set(res)
+  // hightlighting invalid row
+ public rowClass=(context:any)=>{
+  // console.log(context.dataItem.isInvalid);
+  return{'invalid-row':context.dataItem.isInvalid}
+  }
 
-    //     },
-    //     error:(err)=>{
-    //       console.log(err);
-
-    //     }
-    //   });
-    //   }
-    //   else{
-    //      alert('Please select a file')
-    //   }
-
-    // }
+  // save the edited data
+  saveHandler(event:SaveEvent){
+    const updatedItem=this.validateMandatoryFields([event.formGroup.value])[0];
+    this.excelData.update(data=>{
+      data[event.rowIndex]=updatedItem;
+      return [...data]
+    })
+  }
 
 
 
-  
+  // upload excel data and  get excel data using switchmap
+  // uploadFile(){
+  //   if(this.selectedFile){
+  //     this.api.importExcelAPI(this.selectedFile).pipe(
+  //     switchMap((res:any)=>{
+  //       alert(res.message)
+  //       return this.api.exportExcelAPI();
+  //     })
+  //   ).subscribe({
+  //     next:(res:any)=>{
+  //       console.log(res);
+  //       this.excelData.set(res)
+
+  //     },
+  //     error:(err)=>{
+  //       console.log(err);
+
+  //     }
+  //   });
+  //   }
+  //   else{
+  //      alert('Please select a file')
+  //   }
+
+  // }
+
+  public allData = (): ExcelExportData => {
+    return {
+      data: this.allEmployees()
+    }
+  }
+
+
+
+
 }

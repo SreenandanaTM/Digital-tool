@@ -7,7 +7,7 @@
         <p class="invalid">*Invalid Username</p>
         }
         <label for="password">Password</label>
-        <input id="password" type="text" formControlName="password" placeholder="Enter password">
+        <input id="password" type="password" formControlName="password" placeholder="Enter password">
         @if(loginForm.get('password')?.touched&&loginForm.get('password')?.invalid){
         <p class="invalid">*Invalid Password</p>
         }
