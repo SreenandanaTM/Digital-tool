@@ -24,11 +24,18 @@ export class AllApiService {
 
 
 
-
+// upload Excel file
   importExcelAPI(file: File) {
     const formData = new FormData();
     formData.append('file', file)
     return this.http.post(`${this.serverURL}/excel/readdata`, formData)
+  }
+
+  // upload pdf file
+  uploadPdfAPI(file:File){
+    const formData=new FormData();
+    formData.append('pdf',file)
+    return this.http.post(`${this.serverURL}/pdf/extract`,formData)
   }
 
   // export excel

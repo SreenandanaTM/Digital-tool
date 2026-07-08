@@ -1,17 +1,17 @@
 // variables
-$primary:#2563eb;
-$background1:#0f172a;
-$background2:#1e293b;
-$background3:3334155;
-$text:white;
-$radius:12px;
+$primary: #2563eb;
+$background1: #0f172a;
+$background2: #1e293b;
+$background3: 3334155;
+$text: white;
+$radius: 12px;
 
 // mixins
-@mixin glass{
-     background: rgba(255, 255, 255, 0.12);
+@mixin glass {
+    background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 25px rgba(0,0,0,.3);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, .3);
 }
 
 @mixin center {
@@ -20,7 +20,7 @@ $radius:12px;
     align-items: center;
 }
 
-@mixin exportButton($bgColor,$hoverColor){
+@mixin exportButton($bgColor, $hoverColor) {
     padding: 8px 16px;
     border: none;
     border-radius: $radius;
@@ -28,30 +28,42 @@ $radius:12px;
     cursor: pointer;
     background: $bgColor;
     transition: 0.3s;
-    &:hover{
-        opacity:0.9 
-       }
+
+    &:hover {
+        opacity: 0.9
+    }
 }
-.landing-container{
+
+.landing-container {
     min-height: 100vh;
-    background: linear-gradient(135deg,$background1,$background2,$background3);
+    background: linear-gradient(135deg, $background1, $background2, $background3);
     padding: 40px;
-    .upload-card{
+
+    .upload-card {
         @include glass;
         width: 500px;
         margin: auto;
         padding: 30px;
         border-radius: $radius;
     }
-    h2{
+
+    h2 {
         color: $text;
         text-align: center;
         color: #0f172a;
         margin-bottom: 25px;
     }
-    
-    #import{
-        width: 100%;
+
+    .button-container {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #import,
+    #pdfimp {
+        flex: 1;
         padding: 12px;
         border: none;
         border-radius: $radius;
@@ -59,41 +71,72 @@ $radius:12px;
         color: white;
         cursor: pointer;
         transition: .3s;
-        &:hover{
+
+        &:hover {
             background: #1d4ed8;
         }
     }
 
 
 }
-.grid-container{
+
+.grid-container {
     width: 80%;
     margin: 30px auto;
     align-items: center;
     text-align: center;
-    input{
+
+    input {
         margin-bottom: 5px;
         border-radius: 6px;
         border: 1px solid rgb(192, 192, 135);
         padding: 5px;
-       
-    }
-    #excelExp{
-        @include exportButton(#7FB77E,#5E9B5D)
 
     }
-    #pdfExp{
-        @include exportButton(#60A5FA,#3B82F6)
+
+    #excelExp {
+        @include exportButton(#7FB77E, #5E9B5D)
     }
-    .invalid-cell{
+
+    #pdfExp {
+        @include exportButton(#60A5FA, #3B82F6)
+    }
+
+    .invalid-cell {
         background: #ffdddd;
         color: red;
         padding: 4px 8px;
         border-radius: 4px;
         font-weight: 600;
     }
-    .invalid-row{
+
+    .invalid-row {
         background-color: #ffe5e5;
     }
 
+}
+
+.pdf-content {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1 px solid #dcdcdc;
+    border-radius: 8px;
+    background: #f8f9fa;
+
+    h3 {
+        text-align: center;
+        color: #1d4ed8;
+        margin-bottom: 15px;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    pre {
+        color: rgb(23, 23, 46);
+        font-size: 16px;
+        line-height: 1.6;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: arial, sans-serif;
+    }
 }

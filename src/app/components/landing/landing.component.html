@@ -2,36 +2,43 @@
 
     <div class="upload-card">
         <h2>Document Upload</h2>
-        <input hidden type="file" #fileInput accept=".xlsx,.xls" (change)="onFileSelected($event)">
-        <button id="import" (click)="fileInput.click()" kendoButton>Import File</button>
+        
+        <div class="button-container">
+            <input hidden type="file" #excelInput accept=".xlsx,.xls" (change)="onFileSelected($event)">
+            <button id="import" (click)="uploadType='excel'; excelInput.click()" kendoButton>Import Excel</button>
+            <input hidden type="file" #pdfInput accept=".pdf" (change)="onFileSelected($event)">
+            <button id="pdfimp" (click)="uploadType='pdf'; pdfInput.click()">Import PDF</button>
+        </div>
     </div>
 
+   
 
     <div class="grid-container">
 
         @if(showGrid){
         <input type="text" placeholder="Search here..." (input)="search($event)">
-        <kendo-grid [kendoGridReactiveEditing]="createFormGroup" [pageable]="true" [pageSize]="10" [filterable]="true" [kendoGridBinding]="excelData()"
-            [height]="400" [rowClass]="rowClass" (save)="saveHandler($event)">
+        <kendo-grid [kendoGridReactiveEditing]="createFormGroup" [pageable]="true" [pageSize]="10" [filterable]="true"
+            [kendoGridBinding]="excelData()" [height]="400" [rowClass]="rowClass" (add)="addHandler($event)" (save)="saveHandler($event)">
             <ng-template kendoGridToolbarTemplate>
+                 <button id="add" kendoGridAddCommand>Add new</button>
                 <button id="excelExp" type="button" kendoGridExcelCommand [svgIcon]="fileExcelIcon">
                     Export to Excel
                 </button>
-                <button id="pdfExp" kendoGridPDFCommand [svgIcon]="filePdfIcon">
+                <button id="pdfExp" (click)="exportPDF()" kendoGridPDFCommand [svgIcon]="filePdfIcon">
                     Export to PDF
                 </button>
             </ng-template>
 
 
             <!-- <kendo-grid-column field="id" title="ID"> </kendo-grid-column> -->
-            <kendo-grid-column editor="text"  [filterable]="false" field="Name" title="Name">
+            <kendo-grid-column editor="text" [filterable]="false" field="Name" title="Name">
                 <ng-template kendoGridCellTemplate let-dataItem>
                     <span
                         [class.invalid-cell]="dataItem.nameError">{{dataItem.nameError?'*Invalid':dataItem.Name}}</span>
                 </ng-template>
             </kendo-grid-column>
-            <kendo-grid-column editor="text" [filterable]="false" field="Email" title="Email"><ng-template kendoGridCellTemplate
-                    let-dataItem>
+            <kendo-grid-column editor="text" [filterable]="false" field="Email" title="Email"><ng-template
+                    kendoGridCellTemplate let-dataItem>
                     <span
                         [class.invalid-cell]="dataItem.emailError">{{dataItem.emailError?'*Invalid':dataItem.Email}}</span>
                 </ng-template> </kendo-grid-column>
@@ -65,7 +72,9 @@
                 </ng-template> </kendo-grid-column>
 
             <!-- editing inline(row) -->
-            <kendo-grid-command-column  [width]="220">
+
+            @if(!isExporting){
+                 <kendo-grid-command-column [width]="220">
                 <ng-template kendoGridCellTemplate let-isNew="isNew">
                     <button id="edit" kendoGridEditCommand themeColor="primary">Edit</button>
                     <button id="remove" kendoGridRemoveCommand>Remove</button>
@@ -77,12 +86,24 @@
                     </button>
                 </ng-template>
             </kendo-grid-command-column>
+            }
+           
 
             <kendo-grid-pdf [allPages]="true" fileName="Products.pdf" paperSize="A4"></kendo-grid-pdf>
             <kendo-grid-excel fileName="Employees.xlsx" [fetchData]="allData"></kendo-grid-excel>
         </kendo-grid>
 
         }
+        
 
     </div>
+     <div class="pdf-container">
+        @if(pdfContent){
+            <div class="pdf-content">
+                <h3>Extracted Text</h3>
+                <pre>{{pdfContent}}</pre>
+            </div>
+        }
+    </div>
+
 </div>
