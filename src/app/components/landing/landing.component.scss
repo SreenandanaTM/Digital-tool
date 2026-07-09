@@ -148,6 +148,7 @@ $radius: 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     button {
         background: white;
         color: #2563eb;
@@ -156,15 +157,46 @@ $radius: 12px;
         border-radius: 5px;
         cursor: pointer;
     }
-    .role{
+
+    .role {
         margin-right: 10px;
     }
-    button:hover{
+
+    button:hover {
         background: #e5e7eb;
     }
-    h2{
-    color: white;
-    font-family: 'Times New Roman', Times, serif;
+
+    h2 {
+        color: white;
+        font-family: 'Times New Roman', Times, serif;
     }
 }
 
+.chart-container {
+    display: flex;
+}
+
+.chart-legend {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 18px;
+    background-color: white;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 20px !important;
+    font-size: 15px;
+    font-weight: 300;
+    color: #1E88E5;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #666;
+}

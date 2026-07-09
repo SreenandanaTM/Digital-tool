@@ -6,13 +6,15 @@ import { SVGIcon, filePdfIcon, fileExcelIcon } from "@progress/kendo-svg-icons";
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ChartsModule } from '@progress/kendo-angular-charts';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
 
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [KENDO_GRID, KENDO_GRID_PDF_EXPORT, KENDO_GRID_EXCEL_EXPORT],
+  imports: [KENDO_GRID, KENDO_GRID_PDF_EXPORT, KENDO_GRID_EXCEL_EXPORT,ChartsModule,DropDownsModule],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss'
 })
@@ -40,10 +42,21 @@ isExporting=false
 
   excelData = signal<any[]>([]);
   allEmployees = signal<any[]>([])
+
+  // departmentwise bubble
+  departments=signal<any[]>([]);
+  selectedDepartment=signal('All')
+
+  // for storing bubble chart data
+  chartData=signal<any[]>([]);
+
   // variable for setting the grid view when searching anything that not in the gird
   showGrid = false;
   public filePdfIcon: SVGIcon = filePdfIcon;
   public fileExcelIcon: SVGIcon = fileExcelIcon;
+
+
+  
 
   ngOnInit(){
     const user=JSON.parse(sessionStorage.getItem('user')!);
@@ -65,6 +78,47 @@ isExporting=false
       Location: [item.Location, [Validators.required, Validators.pattern('[a-zA-Z]*')]],
       Status: [item.Status]
     });
+  }
+
+  // Dropdown Change event
+  onDepartmentChange(value:string){
+    this.selectedDepartment.set(value);
+    this.laodchartData()
+  }
+
+  // create salary color function
+  getDepartmentColor(department:string):string{
+   switch(department){
+    case 'IT':return '#2196F3';
+    case 'HR':return '#4CAF50';
+    case 'Finance':return '#FFC107';
+    case 'Marketing':return '#FF9800';
+    case 'Sales':return '#F44336';
+    case 'Admin':return '#9C27B0';
+    case 'Support':return '#00BCD4';
+    case 'Operations':return '#795548';
+    default :return '#9E9E9E'; 
+   }
+  }
+
+  // function for chart data
+  laodchartData(){
+    let data=this.allEmployees();
+
+    // filter by department
+    if(this.selectedDepartment()!=='All'){
+      data=data.filter(item=>item.Department===this.selectedDepartment());
+    }
+    const bubbleData=data.map(item=>({
+      x:Number(item.ID),
+      y:Number(item.Salary),
+      size:(item.Salary)/1000,
+      name:item.Name,
+      department:item.Department,
+      designation:item.Designation,
+      color:this.getDepartmentColor(item.Department)
+    }));
+    this.chartData.set(bubbleData);
   }
 
 
@@ -121,6 +175,15 @@ isExporting=false
           const validateData = this.validateMandatoryFields(res)
           this.allEmployees.set(validateData)
           this.excelData.set(validateData)
+
+          // mapping departments from the data
+          const dept=[
+            'All',...new Set(validateData.map((x:any)=>x.Department))
+          ];
+          this.departments.set(dept)
+          this.laodchartData();
+          console.log(this.chartData());
+          
           this.showGrid = true
 
         },

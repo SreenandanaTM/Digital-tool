@@ -1,16 +1,16 @@
 <div class="landing-container">
 
     <div class="header">
-      
-         <h2>Welcome {{name}}</h2>
-       <div class="right-section">
-        <span class="role">{{role}}</span>
-        <button (click)="logout()">Logout</button>
-       </div>
+
+        <h2>Welcome {{name}}</h2>
+        <div class="right-section">
+            <span class="role">{{role}}</span>
+            <button (click)="logout()">Logout</button>
+        </div>
     </div>
     <div class="upload-card">
         <h2>Document Upload</h2>
-        
+
         <div class="button-container">
             <input hidden type="file" #excelInput accept=".xlsx,.xls" (change)="onFileSelected($event)">
             <button id="import" (click)="uploadType='excel'; excelInput.click()" kendoButton>Import Excel</button>
@@ -19,18 +19,67 @@
         </div>
     </div>
 
-   
+
+
 
     <div class="grid-container">
 
         @if(showGrid){
+        <div class="chart-container">
+            <kendo-chart style="width: 100%;">
+                <kendo-chart-title color="#1E88E5" font="italic 22px Arial"
+                    text="Employee Salary Bubble-Chart"></kendo-chart-title>
+                <kendo-chart-x-axis>
+                    <kendo-chart-x-axis-item color="#1E88E5" font="italic 22px Arial"
+                        [title]="{text:'Employee ID'}"></kendo-chart-x-axis-item>
+                </kendo-chart-x-axis>
+                <kendo-chart-y-axis>
+                    <kendo-chart-y-axis-item color="#1E88E5" font="italic 22px Arial"
+                        [title]="{text:'Salary'}"></kendo-chart-y-axis-item>
+                </kendo-chart-y-axis>
+
+                <kendo-chart-series>
+                    <kendo-chart-series-item type="bubble" [data]="chartData()" xField="x" yField="y" sizeField="size"
+                        colorField="color">
+                    </kendo-chart-series-item>
+                </kendo-chart-series>
+                <kendo-chart-tooltip [visible]="true">
+                    <ng-template kendoChartSeriesTooltipTemplate let-dataItem="dataItem">
+                        <div>
+                            <strong>Name:</strong>{{dataItem.name}} <br>
+                            <strong>Department:</strong>{{dataItem.department}} <br>
+                            <strong>Designation:</strong>{{dataItem.designation}} <br>
+                        </div>
+                    </ng-template>
+                </kendo-chart-tooltip>
+            </kendo-chart>
+            
+                <div class="chart-legend">
+                    @for (dept of departments().slice(1); track dept) {
+                    <div class="legend-item">
+                        <span class="legend-color" [style.backgroundColor]="getDepartmentColor(dept)">
+                        </span>
+
+                        <span>{{ dept }}</span>
+                    </div>
+                    }
+                </div>
+
+            
+        </div>
+        <kendo-dropdownlist [data]="departments()" [value]="selectedDepartment()"
+            (valueChange)="onDepartmentChange($event)">
+
+        </kendo-dropdownlist>
+
         <input type="text" placeholder="Search here..." (input)="search($event)">
         <kendo-grid [kendoGridReactiveEditing]="createFormGroup" [pageable]="true" [pageSize]="10" [filterable]="true"
-            [kendoGridBinding]="excelData()" [height]="400" [rowClass]="rowClass" (add)="addHandler($event)" (save)="saveHandler($event)">
+            [kendoGridBinding]="excelData()" [height]="400" [rowClass]="rowClass" (add)="addHandler($event)"
+            (save)="saveHandler($event)">
             <ng-template kendoGridToolbarTemplate>
-              @if(role==='Admin'){
-                   <button id="add" kendoGridAddCommand>Add new</button>
-              }
+                @if(role==='Admin'){
+                <button id="add" kendoGridAddCommand>Add new</button>
+                }
                 <button id="excelExp" type="button" kendoGridExcelCommand [svgIcon]="fileExcelIcon">
                     Export to Excel
                 </button>
@@ -84,7 +133,7 @@
             <!-- editing inline(row) -->
 
             @if(!isExporting&&role==='Admin'){
-                 <kendo-grid-command-column [width]="220" title="Action">
+            <kendo-grid-command-column [width]="220" title="Action">
                 <ng-template kendoGridCellTemplate let-isNew="isNew">
                     <button id="edit" kendoGridEditCommand themeColor="primary">Edit</button>
                     <button id="remove" kendoGridRemoveCommand>Remove</button>
@@ -97,22 +146,22 @@
                 </ng-template>
             </kendo-grid-command-column>
             }
-           
+
 
             <kendo-grid-pdf [allPages]="true" fileName="Products.pdf" paperSize="A4"></kendo-grid-pdf>
             <kendo-grid-excel fileName="Employees.xlsx" [fetchData]="allData"></kendo-grid-excel>
         </kendo-grid>
 
         }
-        
+
 
     </div>
-     <div class="pdf-container">
+    <div class="pdf-container">
         @if(pdfContent){
-            <div class="pdf-content">
-                <h3>Extracted Text</h3>
-                <pre>{{pdfContent}}</pre>
-            </div>
+        <div class="pdf-content">
+            <h3>Extracted Text</h3>
+            <pre>{{pdfContent}}</pre>
+        </div>
         }
     </div>
 
