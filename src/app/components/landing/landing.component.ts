@@ -5,6 +5,7 @@ import { AddEvent, CreateFormGroupArgs, GridComponent, KENDO_GRID, KENDO_GRID_EX
 import { SVGIcon, filePdfIcon, fileExcelIcon } from "@progress/kendo-svg-icons";
 import { ExcelExportData } from '@progress/kendo-angular-excel-export';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 
@@ -24,6 +25,7 @@ isExporting=false
 
   api = inject(AllApiService)
   fb = inject(FormBuilder)
+  route=inject(Router)
 
 
   selectedFile!: File
@@ -32,12 +34,22 @@ isExporting=false
   // store pdf text data
   pdfContent:string='';
 
+  // role based access
+  role='';
+  name='';
+
   excelData = signal<any[]>([]);
   allEmployees = signal<any[]>([])
   // variable for setting the grid view when searching anything that not in the gird
   showGrid = false;
   public filePdfIcon: SVGIcon = filePdfIcon;
   public fileExcelIcon: SVGIcon = fileExcelIcon;
+
+  ngOnInit(){
+    const user=JSON.parse(sessionStorage.getItem('user')!);
+    this.role=user.role
+    this.name=user.name
+  }
 
 
 
@@ -49,7 +61,7 @@ isExporting=false
       Email: [item.Email, [Validators.required, Validators.email]],
       Department: [item.Department, [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
       Designation: [item.Designation, [Validators.required, Validators.pattern('[a-zA-Z ]*')]],
-      salary: [Number(item.salary), [Validators.required, Validators.pattern('[0-9]*')]],
+      salary: [Number(item.Salary), [Validators.required, Validators.pattern('[0-9]*')]],
       Location: [item.Location, [Validators.required, Validators.pattern('[a-zA-Z]*')]],
       Status: [item.Status]
     });
@@ -137,7 +149,7 @@ isExporting=false
       emailError: !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(item.Email),
       departmentError: !/^[A-Za-z ]+$/.test(item.Department),
       designationError: !/^[A-Za-z ]+$/.test(item.Designation),
-      salaryError: !/^\d+(\.\d+)?$/.test(item.salary),
+      salaryError: !/^\d+(\.\d+)?$/.test(item.Salary),
       locationError: !/^[A-Za-z ]+$/.test(item.Location),
       statusError: !/^(completed|Pending|Cancelled|Due)$/i.test(item.Status),
       isInvalid:
@@ -146,7 +158,7 @@ isExporting=false
         !item.Department ||
         !item.Location ||
         !item.Designation ||
-        !item.salary ||
+        !item.Salary ||
         !item.Status
 
     }))
@@ -184,6 +196,11 @@ isExporting=false
     event.sender.addRow({})
   }
 
+  // logout 
+  logout(){
+    sessionStorage.clear()
+    this.route.navigateByUrl('/')
+  }
 
 
   // upload excel data and  get excel data using switchmap

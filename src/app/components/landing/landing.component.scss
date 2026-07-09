@@ -1,5 +1,5 @@
 // variables
-$primary: #2563eb;
+$primary: #2592eb;
 $background1: #0f172a;
 $background2: #1e293b;
 $background3: 3334155;
@@ -37,20 +37,20 @@ $radius: 12px;
 .landing-container {
     min-height: 100vh;
     background: linear-gradient(135deg, $background1, $background2, $background3);
-    padding: 40px;
 
     .upload-card {
         @include glass;
         width: 500px;
         margin: auto;
         padding: 30px;
+        margin-top: 100px;
         border-radius: $radius;
     }
 
     h2 {
         color: $text;
         text-align: center;
-        color: #0f172a;
+        color: #83b8d6;
         margin-bottom: 25px;
     }
 
@@ -73,7 +73,7 @@ $radius: 12px;
         transition: .3s;
 
         &:hover {
-            background: #1d4ed8;
+            background: #11558d;
         }
     }
 
@@ -95,7 +95,7 @@ $radius: 12px;
     }
 
     #excelExp {
-        @include exportButton(#7FB77E, #5E9B5D)
+        @include exportButton(#60A5FA, #3B82F6)
     }
 
     #pdfExp {
@@ -118,14 +118,14 @@ $radius: 12px;
 
 .pdf-content {
     margin-top: 20px;
-    padding: 15px;
+    padding: 30px;
     border: 1 px solid #dcdcdc;
     border-radius: 8px;
-    background: #f8f9fa;
+    background: #a5caf1;
 
     h3 {
         text-align: center;
-        color: #1d4ed8;
+        color: white;
         margin-bottom: 15px;
         font-size: 24px;
         font-weight: bold;
@@ -140,3 +140,31 @@ $radius: 12px;
         font-family: arial, sans-serif;
     }
 }
+
+.header {
+    background-color: #83b8d6;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    button {
+        background: white;
+        color: #2563eb;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .role{
+        margin-right: 10px;
+    }
+    button:hover{
+        background: #e5e7eb;
+    }
+    h2{
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    }
+}
+

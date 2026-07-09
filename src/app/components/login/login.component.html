@@ -11,6 +11,15 @@
         @if(loginForm.get('password')?.touched&&loginForm.get('password')?.invalid){
         <p class="invalid">*Invalid Password</p>
         }
+
+        <div class="role-group">
+            <label>
+            <input type="radio" name="role" value="Admin" formControlName="role">Admin
+        </label>
+        <label>
+            <input type="radio" name="role" value="Executer" formControlName="role">Executer
+        </label>
+        </div>
         <button kendoButton (click)="login()">Login</button>
     </form>
 </div>

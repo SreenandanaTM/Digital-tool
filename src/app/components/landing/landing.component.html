@@ -1,5 +1,13 @@
 <div class="landing-container">
 
+    <div class="header">
+      
+         <h2>Welcome {{name}}</h2>
+       <div class="right-section">
+        <span class="role">{{role}}</span>
+        <button (click)="logout()">Logout</button>
+       </div>
+    </div>
     <div class="upload-card">
         <h2>Document Upload</h2>
         
@@ -20,7 +28,9 @@
         <kendo-grid [kendoGridReactiveEditing]="createFormGroup" [pageable]="true" [pageSize]="10" [filterable]="true"
             [kendoGridBinding]="excelData()" [height]="400" [rowClass]="rowClass" (add)="addHandler($event)" (save)="saveHandler($event)">
             <ng-template kendoGridToolbarTemplate>
-                 <button id="add" kendoGridAddCommand>Add new</button>
+              @if(role==='Admin'){
+                   <button id="add" kendoGridAddCommand>Add new</button>
+              }
                 <button id="excelExp" type="button" kendoGridExcelCommand [svgIcon]="fileExcelIcon">
                     Export to Excel
                 </button>
@@ -73,8 +83,8 @@
 
             <!-- editing inline(row) -->
 
-            @if(!isExporting){
-                 <kendo-grid-command-column [width]="220">
+            @if(!isExporting&&role==='Admin'){
+                 <kendo-grid-command-column [width]="220" title="Action">
                 <ng-template kendoGridCellTemplate let-isNew="isNew">
                     <button id="edit" kendoGridEditCommand themeColor="primary">Edit</button>
                     <button id="remove" kendoGridRemoveCommand>Remove</button>

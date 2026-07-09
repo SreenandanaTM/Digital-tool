@@ -20,7 +20,8 @@ export class LoginComponent {
      constructor(){
     this.loginForm=this.fb.group({
       username:['',[Validators.required,Validators.pattern('[a-zA-Z ]*')]],
-      password:['',[Validators.required,Validators.pattern('[a-zA-Z@34578_0-9]*')]]
+      password:['',[Validators.required,Validators.pattern('[a-zA-Z@34578_0-9]*')]],
+      role:['',Validators.required]
     })
   }
 
@@ -31,6 +32,10 @@ export class LoginComponent {
       this.api.loginAPI(data).subscribe({
         next:(res:any)=>{
           console.log(res);
+          sessionStorage.setItem('user',JSON.stringify({
+            name:this.loginForm.value.username,
+            role:this.loginForm.value.role
+          }))
           this.route.navigateByUrl('/landing')
           alert(res.message)
         },error:(err)=>{
