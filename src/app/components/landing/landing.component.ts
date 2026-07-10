@@ -35,6 +35,9 @@ isExporting=false
   uploadType = '';
   // store pdf text data
   pdfContent:string='';
+  pdfData=signal<any[]>([])
+  pdfColumn=signal<{field:string;title:string}[]>([])
+
 
   // role based access
   role='';
@@ -124,6 +127,8 @@ isExporting=false
 
   // selection of the excel file
   onFileSelected(event: Event) {
+    console.log("upload file");
+    
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.selectedFile = input.files[0];
@@ -139,10 +144,23 @@ isExporting=false
 
   // pdf upload
   uploadPdf() {
+    console.log("inside upload pdf");
+    
     if (this.selectedFile) {
       this.api.uploadPdfAPI(this.selectedFile).subscribe({
         next: (res: any) => {
-          this.pdfContent=res.text;
+          // this.pdfContent=res.text;
+          this.pdfData.set(res.tables[0].rows)
+          console.log(this.pdfData());
+          
+          if(this.pdfData().length>0){
+            this.pdfColumn.set(
+              Object.keys(this.pdfData()[0]).map(key=>({
+                field:key,
+                title:key
+              }))
+            );
+          }
           console.log(res);
         },
         error: (err) => {

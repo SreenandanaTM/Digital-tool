@@ -22,6 +22,9 @@
 
 
 
+
+
+
     <div class="grid-container">
 
         @if(showGrid){
@@ -53,19 +56,19 @@
                     </ng-template>
                 </kendo-chart-tooltip>
             </kendo-chart>
-            
-                <div class="chart-legend">
-                    @for (dept of departments().slice(1); track dept) {
-                    <div class="legend-item">
-                        <span class="legend-color" [style.backgroundColor]="getDepartmentColor(dept)">
-                        </span>
 
-                        <span>{{ dept }}</span>
-                    </div>
-                    }
+            <div class="chart-legend">
+                @for (dept of departments().slice(1); track dept) {
+                <div class="legend-item">
+                    <span class="legend-color" [style.backgroundColor]="getDepartmentColor(dept)">
+                    </span>
+
+                    <span>{{ dept }}</span>
                 </div>
+                }
+            </div>
 
-            
+
         </div>
         <kendo-dropdownlist [data]="departments()" [value]="selectedDepartment()"
             (valueChange)="onDepartmentChange($event)">
@@ -157,12 +160,21 @@
 
     </div>
     <div class="pdf-container">
-        @if(pdfContent){
+        <!-- @if(pdfContent){
         <div class="pdf-content">
             <h3>Extracted Text</h3>
             <pre>{{pdfContent}}</pre>
         </div>
+        } -->
+        @if(pdfData().length>0){
+        <kendo-grid [data]="pdfData()">
+            @for (column of pdfColumn(); track column) {
+            <kendo-grid-column field="{{ column.field }}" title="{{ column.title }}">
+            </kendo-grid-column>
+            }
+        </kendo-grid>
         }
+
     </div>
 
 </div>

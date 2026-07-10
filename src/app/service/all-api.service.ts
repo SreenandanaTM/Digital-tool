@@ -9,8 +9,12 @@ export class AllApiService {
 
   constructor(private http: HttpClient) { }
   // login
+  // loginAPI(body: any) {
+  //   return this.http.post(`${this.serverURL}/test`, body)
+  // }
+
   loginAPI(body: any) {
-    return this.http.post(`${this.serverURL}/test`, body)
+    return this.http.post('http://10.15.51.144:5037/api/auth/login', body)
   }
 
 
@@ -32,10 +36,16 @@ export class AllApiService {
   }
 
   // upload pdf file
+  // uploadPdfAPI(file:File){
+  //   const formData=new FormData();
+  //   formData.append('pdf',file)
+  //   return this.http.post(`${this.serverURL}/pdf/extract`,formData)
+  // }
+
   uploadPdfAPI(file:File){
     const formData=new FormData();
-    formData.append('pdf',file)
-    return this.http.post(`${this.serverURL}/pdf/extract`,formData)
+    formData.append('file',file)
+    return this.http.post('http://10.15.51.144:5037/api/files/upload',formData)
   }
 
   // export excel
