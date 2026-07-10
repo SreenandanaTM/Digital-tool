@@ -56,7 +56,7 @@ jobs:
 
         with:
 
-          path: dist/digital-tool/browser
+          path: dist/Digital-tool/browser
  
   deploy:
 
