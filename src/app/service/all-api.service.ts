@@ -9,13 +9,13 @@ export class AllApiService {
 
   constructor(private http: HttpClient) { }
   // login
-  // loginAPI(body: any) {
-  //   return this.http.post(`${this.serverURL}/test`, body)
-  // }
-
   loginAPI(body: any) {
-    return this.http.post('http://10.15.51.144:5037/api/auth/login', body)
+    return this.http.post(`${this.serverURL}/test`, body)
   }
+
+  // loginAPI(body: any) {
+  //   return this.http.post('http://10.15.51.144:5037/api/auth/login', body)
+  // }
 
 
   // this api call is for storing data permanantly
@@ -46,6 +46,7 @@ export class AllApiService {
     const formData=new FormData();
     formData.append('file',file)
     return this.http.post('http://10.15.51.144:5037/api/files/upload',formData)
+    // return this.http.post(`${this.serverURL}/files/upload`,formData)
   }
 
   // export excel

@@ -36,7 +36,7 @@ isExporting=false
   // store pdf text data
   pdfContent:string='';
   pdfData=signal<any[]>([])
-  pdfColumn=signal<{field:string;title:string}[]>([])
+  pdfColumn=signal<any[]>([])
 
 
   // role based access
@@ -150,15 +150,19 @@ isExporting=false
       this.api.uploadPdfAPI(this.selectedFile).subscribe({
         next: (res: any) => {
           // this.pdfContent=res.text;
-          this.pdfData.set(res.tables[0].rows)
+
+          this.pdfData.set(res.tables)
           console.log(this.pdfData());
           
           if(this.pdfData().length>0){
             this.pdfColumn.set(
-              Object.keys(this.pdfData()[0]).map(key=>({
+              res.tables.map((table:any)=>
+                 Object.keys(table.rows[0]??{}).map(key=>({
                 field:key,
                 title:key
               }))
+              )
+             
             );
           }
           console.log(res);

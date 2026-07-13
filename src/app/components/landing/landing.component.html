@@ -167,12 +167,15 @@
         </div>
         } -->
         @if(pdfData().length>0){
-        <kendo-grid [data]="pdfData()">
-            @for (column of pdfColumn(); track column) {
-            <kendo-grid-column field="{{ column.field }}" title="{{ column.title }}">
+        @for(table of pdfData(); track $index){
+        <kendo-grid [data]="table.rows">
+            @for (column of pdfColumn()[$index]; track column.field) {
+            <kendo-grid-column [headerStyle]="{ 'background-color': '#555' ,'color':'white'}" field="{{ column.field }}" title="{{ column.title }}">
             </kendo-grid-column>
             }
         </kendo-grid>
+        }
+
         }
 
     </div>
